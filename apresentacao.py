@@ -82,96 +82,36 @@ def verifica_colisao():
         return False
 def adiciona_zona_colisao():
     zonaDeColisao.clear()
-    x= 0
-    y= 0
+    adicionar_zona_navio(playerPosicoesPH, tamanhoPH)
+    adicionar_zona_navio(playerPosicoesPA, tamanhoPA)
+    adicionar_zona_navio(playerPosicoesCRU, tamanhoCRU)
+    adicionar_zona_navio(playerPosicoesFra, tamanhoFra)
 
-    if playerPosicoesPH[0] == "horizontal":
-        for i in range(1, len(playerPosicoesPH)):
-            item = playerPosicoesPH[i]
-            x= int(item[0])
-            y= int(item[1])
+def adicionar_zona_navio(posicoes, tamanho):
+    if posicoes[0] == "horizontal":
+        adicionar_zona_horizontal(posicoes, tamanho)
+    elif posicoes[0] == "vertical":
+        adicionar_zona_vertical(posicoes, tamanho)
 
-            zonaDeColisao.append([x -1,y])
-            zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x,y+1])
-        zonaDeColisao.append([x,y-tamanhoPH])
-        
-    if playerPosicoesPH[0] == "vertical":
-        for i in range(1, len(playerPosicoesPH)):
-            item = playerPosicoesPH[i]
-            x= int(item[0])
-            y= int(item[1])
+def adicionar_zona_horizontal(posicoes, tamanho):
+    for i in range(1, len(posicoes)):
+        x, y = map(int, posicoes[i])
+        zonaDeColisao.append([x - 1, y])
+        zonaDeColisao.append([x + 1, y])
+    # Adiciona extremidades horizontais
+    x, y = map(int, posicoes[-1])
+    zonaDeColisao.append([x, y + 1])
+    zonaDeColisao.append([x, y - tamanho])
 
-            zonaDeColisao.append([x,y + 1])
-            zonaDeColisao.append([x,y - 1])
-        zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x -tamanhoPH,y])
-
-    if playerPosicoesPA[0] == "horizontal":
-        for i in range(1, len(playerPosicoesPA)):
-            item = playerPosicoesPA[i]            
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x -1,y])
-            zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x,y+1])
-        zonaDeColisao.append([x,y-tamanhoPA])
-        
-    if playerPosicoesPA[0] == "vertical":
-        for i in range(1, len(playerPosicoesPA)):
-            item = playerPosicoesPA[i]
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x,y + 1])
-            zonaDeColisao.append([x,y - 1])
-        zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x -tamanhoPA,y])
-
-    if playerPosicoesCRU[0] == "horizontal":
-        for i in range(1, len(playerPosicoesCRU)):
-            item = playerPosicoesCRU[i]            
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x -1,y])
-            zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x,y+1])
-        zonaDeColisao.append([x,y-tamanhoCRU])
-        
-    if playerPosicoesCRU[0] == "vertical":
-        for i in range(1, len(playerPosicoesCRU)):
-            item = playerPosicoesCRU[i]
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x,y + 1])
-            zonaDeColisao.append([x,y - 1])
-        zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x -tamanhoCRU,y])
-
-    if playerPosicoesFra[0] == "horizontal":
-        for i in range(1, len(playerPosicoesFra)):
-            item = playerPosicoesFra[i]            
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x -1,y])
-            zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x,y+1])
-        zonaDeColisao.append([x,y-tamanhoFra])
-        
-    if playerPosicoesFra[0] == "vertical":
-        for i in range(1, len(playerPosicoesFra)):
-            item = playerPosicoesFra[i]
-            x= int(item[0])
-            y= int(item[1])
-
-            zonaDeColisao.append([x,y + 1])
-            zonaDeColisao.append([x,y - 1])
-        zonaDeColisao.append([x +1,y])
-        zonaDeColisao.append([x -tamanhoFra,y])
+def adicionar_zona_vertical(posicoes, tamanho):
+    for i in range(1, len(posicoes)):
+        x, y = map(int, posicoes[i])
+        zonaDeColisao.append([x, y + 1])
+        zonaDeColisao.append([x, y - 1])
+    # Adiciona extremidades verticais
+    x, y = map(int, posicoes[-1])
+    zonaDeColisao.append([x + 1, y])
+    zonaDeColisao.append([x - tamanho, y])
 
 def verifica_colisao2(tabuleiro, ph_x,ph_y,ph_v,  pA_x,pA_y,pA_v,  cor_x,cor_y,cor_v,  fra_x,fra_y,fra_v):
     retorno = 0
@@ -238,7 +178,7 @@ def verifica_colisao2(tabuleiro, ph_x,ph_y,ph_v,  pA_x,pA_y,pA_v,  cor_x,cor_y,c
                 # print(f"colidiu {x[i][fra_x]}")
                 retorno = 1
             i += 1
-    if retorno == 1:
+    if retorno >= 1:
         return True
     else:
         return False
@@ -1252,8 +1192,9 @@ def montar_jogo_player(ModoDeJogo):
             exec4 = posiciona_fragata(*exec,*exec2,*exec3)
             adiciona_zona_colisao()
             colidiu = verifica_colisao()
+            colidiu2 = verifica_colisao2("player", *exec,*exec2,*exec3,*exec4)
 
-            if colidiu == False:
+            if colidiu == False and colidiu2 == False:
                 break
             else:
                 print("Posições inválidas")
@@ -1381,6 +1322,3 @@ while True:
             
         salvar_game()
         break
-
-    
-    
